@@ -1,0 +1,674 @@
+{
+  "analysis_time": "2026-06-24T22:51:40.664243",
+  "total_logs": 23,
+  "attacks_found": 27,
+  "confirmed_breaches": 12,
+  "attempted_attacks": 15,
+  "suspicious": 0,
+  "attacks": [
+    {
+      "vulnerability": "XSS",
+      "type": "Reflected/Stored XSS",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + response 1532 bytes — page likely rendered the injected script to the victim's browser",
+      "attacker_ip": "203.0.113.42",
+      "timestamp": "2026-06-01 09:30:12",
+      "method": "GET",
+      "endpoint": "/search?q=%3Cscript%3Ealert(%27XSS%27)%3C/script%3E",
+      "http_status": 200,
+      "response_size": 1532,
+      "severity": "Critical",
+      "matched_payloads": [
+        "<script[^>]*>.*?</script>",
+        "<script>.*alert\\s*\\(.*\\).*</script>",
+        "<script>.*</script>",
+        "%3Cscript%3E"
+      ]
+    },
+    {
+      "vulnerability": "XSS",
+      "type": "Reflected/Stored XSS",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "Server rejected request with HTTP 403 (access denied)",
+      "attacker_ip": "198.51.100.7",
+      "timestamp": "2026-06-01 09:45:00",
+      "method": "GET",
+      "endpoint": "/search?q=<script>alert(1)</script>",
+      "http_status": 403,
+      "response_size": 120,
+      "severity": "High",
+      "matched_payloads": [
+        "<script[^>]*>.*?</script>",
+        "<script>.*alert\\s*\\(.*\\).*</script>",
+        "<script>.*</script>"
+      ]
+    },
+    {
+      "vulnerability": "DOM XSS",
+      "type": "DOM-based XSS",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + response 2890 bytes — page likely rendered the injected script to the victim's browser",
+      "attacker_ip": "172.16.0.88",
+      "timestamp": "2026-06-01 10:00:00",
+      "method": "GET",
+      "endpoint": "/page",
+      "http_status": 200,
+      "response_size": 2890,
+      "severity": "High",
+      "matched_payloads": [
+        "innerHTML\\s*=",
+        "location\\.hash"
+      ]
+    },
+    {
+      "vulnerability": "XSS",
+      "type": "Reflected/Stored XSS",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 404 — endpoint/resource not found, attack failed",
+      "attacker_ip": "172.16.0.88",
+      "timestamp": "2026-06-01 10:05:00",
+      "method": "GET",
+      "endpoint": "/notfound#<script>alert(document.cookie)</script>",
+      "http_status": 404,
+      "response_size": 88,
+      "severity": "Critical",
+      "matched_payloads": [
+        "<script[^>]*>.*?</script>",
+        "<script>.*alert\\s*\\(.*\\).*</script>",
+        "<script>.*</script>",
+        "document\\s*\\.\\s*cookie"
+      ]
+    },
+    {
+      "vulnerability": "DOM XSS",
+      "type": "DOM-based XSS",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 404 — endpoint/resource not found, attack failed",
+      "attacker_ip": "172.16.0.88",
+      "timestamp": "2026-06-01 10:05:00",
+      "method": "GET",
+      "endpoint": "/notfound#<script>alert(document.cookie)</script>",
+      "http_status": 404,
+      "response_size": 88,
+      "severity": "Medium",
+      "matched_payloads": [
+        "#.*<script"
+      ]
+    },
+    {
+      "vulnerability": "IDOR",
+      "type": "Insecure Direct Object Reference",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + response 1312 bytes — server returned private data for a different user's ID",
+      "attacker_ip": "10.0.0.55",
+      "timestamp": "2026-06-01 10:10:00",
+      "method": "GET",
+      "endpoint": "/user/1337",
+      "http_status": 200,
+      "response_size": 1312,
+      "severity": "Medium",
+      "matched_payloads": [
+        "/user[s]?/(\\d+)"
+      ]
+    },
+    {
+      "vulnerability": "IDOR",
+      "type": "Insecure Direct Object Reference",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + response 987 bytes — server returned private data for a different user's ID",
+      "attacker_ip": "10.0.0.55",
+      "timestamp": "2026-06-01 10:10:10",
+      "method": "GET",
+      "endpoint": "/invoice/5001",
+      "http_status": 200,
+      "response_size": 987,
+      "severity": "Medium",
+      "matched_payloads": [
+        "/invoice[s]?/(\\d+)"
+      ]
+    },
+    {
+      "vulnerability": "IDOR",
+      "type": "Insecure Direct Object Reference",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + response 712 bytes — server returned private data for a different user's ID",
+      "attacker_ip": "10.0.0.55",
+      "timestamp": "2026-06-01 10:10:20",
+      "method": "GET",
+      "endpoint": "/admin/users/99",
+      "http_status": 200,
+      "response_size": 712,
+      "severity": "Critical",
+      "matched_payloads": [
+        "/user[s]?/(\\d+)",
+        "/admin/user[s]?/(\\d+)"
+      ]
+    },
+    {
+      "vulnerability": "IDOR",
+      "type": "Insecure Direct Object Reference",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "Server rejected request with HTTP 403 (access denied)",
+      "attacker_ip": "10.0.0.55",
+      "timestamp": "2026-06-01 10:11:00",
+      "method": "GET",
+      "endpoint": "/admin/users/100",
+      "http_status": 403,
+      "response_size": 95,
+      "severity": "Critical",
+      "matched_payloads": [
+        "/user[s]?/(\\d+)",
+        "/admin/user[s]?/(\\d+)"
+      ]
+    },
+    {
+      "vulnerability": "IDOR",
+      "type": "Insecure Direct Object Reference",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 404 — endpoint/resource not found, attack failed",
+      "attacker_ip": "10.0.0.55",
+      "timestamp": "2026-06-01 10:11:30",
+      "method": "GET",
+      "endpoint": "/user/9999",
+      "http_status": 404,
+      "response_size": 88,
+      "severity": "Medium",
+      "matched_payloads": [
+        "/user[s]?/(\\d+)"
+      ]
+    },
+    {
+      "vulnerability": "CSRF",
+      "type": "Cross-Site Request Forgery",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 200 but endpoint not clearly sensitive — may or may not have executed",
+      "attacker_ip": "91.200.12.5",
+      "timestamp": "2026-06-01 11:00:00",
+      "method": "POST",
+      "endpoint": "/transfer",
+      "http_status": 200,
+      "response_size": 312,
+      "severity": "High",
+      "matched_payloads": [
+        "POST\\s+/(?:transfer|payment|delete|update|change|modify|send)",
+        "POST to sensitive endpoint without CSRF token"
+      ]
+    },
+    {
+      "vulnerability": "CSRF",
+      "type": "Cross-Site Request Forgery",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "Server rejected request with HTTP 405 (access denied)",
+      "attacker_ip": "91.200.12.5",
+      "timestamp": "2026-06-01 11:00:30",
+      "method": "POST",
+      "endpoint": "/payment",
+      "http_status": 405,
+      "response_size": 98,
+      "severity": "High",
+      "matched_payloads": [
+        "POST\\s+/(?:transfer|payment|delete|update|change|modify|send)",
+        "POST to sensitive endpoint without CSRF token"
+      ]
+    },
+    {
+      "vulnerability": "CSRF",
+      "type": "Cross-Site Request Forgery",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 200 but endpoint not clearly sensitive — may or may not have executed",
+      "attacker_ip": "203.0.113.99",
+      "timestamp": "2026-06-01 11:10:00",
+      "method": "GET",
+      "endpoint": "/api/user",
+      "http_status": 200,
+      "response_size": 890,
+      "severity": "High",
+      "matched_payloads": [
+        "Origin:\\s*https?://(?!yourdomain)"
+      ]
+    },
+    {
+      "vulnerability": "CORS",
+      "type": "Cross-Origin Resource Sharing Misconfiguration",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + response 890 bytes — API returned data with ACAO header reflecting attacker origin, data leakage confirmed",
+      "attacker_ip": "203.0.113.99",
+      "timestamp": "2026-06-01 11:10:00",
+      "method": "GET",
+      "endpoint": "/api/user",
+      "http_status": 200,
+      "response_size": 890,
+      "severity": "Medium",
+      "matched_payloads": [
+        "Origin:\\s*https?://evil"
+      ]
+    },
+    {
+      "vulnerability": "CORS",
+      "type": "Cross-Origin Resource Sharing Misconfiguration",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 200 but tiny response — CORS misconfiguration exists but data may be empty",
+      "attacker_ip": "203.0.113.99",
+      "timestamp": "2026-06-01 11:10:30",
+      "method": "GET",
+      "endpoint": "/api/ping",
+      "http_status": 200,
+      "response_size": 12,
+      "severity": "Medium",
+      "matched_payloads": [
+        "Access-Control-Allow-Origin:\\s*null"
+      ]
+    },
+    {
+      "vulnerability": "IDOR",
+      "type": "Insecure Direct Object Reference",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "Server rejected request with HTTP 403 (access denied)",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:01:00",
+      "method": "GET",
+      "endpoint": "/api?id=1;DROP+TABLE+users--",
+      "http_status": 403,
+      "response_size": 88,
+      "severity": "Medium",
+      "matched_payloads": [
+        "[?&]id=(\\d+)"
+      ]
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "type": "SQL Injection",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "Server rejected request with HTTP 403 (access denied)",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:01:00",
+      "method": "GET",
+      "endpoint": "/api?id=1;DROP+TABLE+users--",
+      "http_status": 403,
+      "response_size": 88,
+      "severity": "Medium",
+      "matched_payloads": [
+        ";\\s*drop"
+      ]
+    },
+    {
+      "vulnerability": "IDOR",
+      "type": "Insecure Direct Object Reference",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + response 312 bytes — server returned private data for a different user's ID",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:05:00",
+      "method": "GET",
+      "endpoint": "/item?id=1+AND+SLEEP(5)--",
+      "http_status": 200,
+      "response_size": 312,
+      "severity": "Medium",
+      "matched_payloads": [
+        "[?&]id=(\\d+)"
+      ]
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "type": "SQL Injection",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + response 312 bytes — server likely returned database records or exposed SQL error details",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:05:00",
+      "method": "GET",
+      "endpoint": "/item?id=1+AND+SLEEP(5)--",
+      "http_status": 200,
+      "response_size": 312,
+      "severity": "Medium",
+      "matched_payloads": [
+        "sleep\\s*\\(\\s*\\d+\\s*\\)"
+      ]
+    },
+    {
+      "vulnerability": "Blind SQL Injection",
+      "type": "Blind SQL Injection (Time-based)",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "Time-based payload + HTTP 200 — server executed SLEEP/WAITFOR, confirming injection is running inside the database",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:05:00",
+      "method": "GET",
+      "endpoint": "/item?id=1+AND+SLEEP(5)--",
+      "http_status": 200,
+      "response_size": 312,
+      "severity": "Critical",
+      "matched_payloads": [
+        "sleep\\s*\\(\\s*\\d+\\s*\\)"
+      ]
+    },
+    {
+      "vulnerability": "IDOR",
+      "type": "Insecure Direct Object Reference",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 200 but tiny response (45 bytes) — likely empty/error page",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:05:30",
+      "method": "GET",
+      "endpoint": "/item?id=1+AND+1=2--",
+      "http_status": 200,
+      "response_size": 45,
+      "severity": "Medium",
+      "matched_payloads": [
+        "[?&]id=(\\d+)"
+      ]
+    },
+    {
+      "vulnerability": "SSRF",
+      "type": "Server-Side Request Forgery",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + 512 bytes — server fetched internal/cloud resource  on behalf of attacker",
+      "attacker_ip": "172.20.0.5",
+      "timestamp": "2026-06-01 12:10:00",
+      "method": "GET",
+      "endpoint": "/fetch?url=http://169.254.169.254/latest/meta-data/",
+      "http_status": 200,
+      "response_size": 512,
+      "severity": "High",
+      "matched_payloads": [
+        "(url|uri|src|dest|redirect|next|link|file|load|fetch|open)=https?://169\\.254\\.",
+        "169\\.254\\.169\\.254"
+      ]
+    },
+    {
+      "vulnerability": "SSRF",
+      "type": "Server-Side Request Forgery",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 500 — server tried but internal request failed",
+      "attacker_ip": "172.20.0.5",
+      "timestamp": "2026-06-01 12:10:30",
+      "method": "GET",
+      "endpoint": "/proxy?src=file:///etc/passwd",
+      "http_status": 500,
+      "response_size": 88,
+      "severity": "High",
+      "matched_payloads": [
+        "(url|uri|src|dest|redirect|next|link|file|load|fetch|open)=file://",
+        "file:///etc/passwd"
+      ]
+    },
+    {
+      "vulnerability": "SSRF",
+      "type": "Server-Side Request Forgery",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + 445 bytes — server fetched internal/cloud resource  on behalf of attacker",
+      "attacker_ip": "88.80.186.25",
+      "timestamp": "2026-06-01 12:15:00",
+      "method": "POST",
+      "endpoint": "/api/xml",
+      "http_status": 200,
+      "response_size": 445,
+      "severity": "High",
+      "matched_payloads": [
+        "file:///etc/passwd"
+      ]
+    },
+    {
+      "vulnerability": "XXE",
+      "type": "XML External Entity Injection",
+      "outcome": "CONFIRMED BREACH",
+      "outcome_reason": "HTTP 200 + 445 bytes — XML parser processed external entity and likely returned file contents or internal data",
+      "attacker_ip": "88.80.186.25",
+      "timestamp": "2026-06-01 12:15:00",
+      "method": "POST",
+      "endpoint": "/api/xml",
+      "http_status": 200,
+      "response_size": 445,
+      "severity": "High",
+      "matched_payloads": [
+        "<!ENTITY\\s+\\w+\\s+SYSTEM",
+        "<!ENTITY\\s+xxe"
+      ]
+    },
+    {
+      "vulnerability": "SSRF",
+      "type": "Server-Side Request Forgery",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 500 — server tried but internal request failed",
+      "attacker_ip": "88.80.186.25",
+      "timestamp": "2026-06-01 12:15:30",
+      "method": "POST",
+      "endpoint": "/xml",
+      "http_status": 500,
+      "response_size": 120,
+      "severity": "High",
+      "matched_payloads": [
+        "169\\.254\\.169\\.254"
+      ]
+    },
+    {
+      "vulnerability": "XXE",
+      "type": "XML External Entity Injection",
+      "outcome": "ATTEMPTED ATTACK",
+      "outcome_reason": "HTTP 500 — XML parser error, entity processed but caused crash",
+      "attacker_ip": "88.80.186.25",
+      "timestamp": "2026-06-01 12:15:30",
+      "method": "POST",
+      "endpoint": "/xml",
+      "http_status": 500,
+      "response_size": 120,
+      "severity": "High",
+      "matched_payloads": [
+        "<!ENTITY\\s+\\w+\\s+SYSTEM",
+        "<!DOCTYPE\\s+\\w+\\s*\\[",
+        "<!ENTITY\\s+xxe",
+        "\\[<!ENTITY",
+        "<!DOCTYPE[^>]*\\[<!ENTITY"
+      ]
+    }
+  ],
+  "confirmed_breach_list": [
+    {
+      "vulnerability": "XSS",
+      "attacker_ip": "203.0.113.42",
+      "timestamp": "2026-06-01 09:30:12",
+      "endpoint": "/search?q=%3Cscript%3Ealert(%27XSS%27)%3C/script%3E",
+      "reason": "HTTP 200 + response 1532 bytes — page likely rendered the injected script to the victim's browser"
+    },
+    {
+      "vulnerability": "DOM XSS",
+      "attacker_ip": "172.16.0.88",
+      "timestamp": "2026-06-01 10:00:00",
+      "endpoint": "/page",
+      "reason": "HTTP 200 + response 2890 bytes — page likely rendered the injected script to the victim's browser"
+    },
+    {
+      "vulnerability": "IDOR",
+      "attacker_ip": "10.0.0.55",
+      "timestamp": "2026-06-01 10:10:00",
+      "endpoint": "/user/1337",
+      "reason": "HTTP 200 + response 1312 bytes — server returned private data for a different user's ID"
+    },
+    {
+      "vulnerability": "IDOR",
+      "attacker_ip": "10.0.0.55",
+      "timestamp": "2026-06-01 10:10:10",
+      "endpoint": "/invoice/5001",
+      "reason": "HTTP 200 + response 987 bytes — server returned private data for a different user's ID"
+    },
+    {
+      "vulnerability": "IDOR",
+      "attacker_ip": "10.0.0.55",
+      "timestamp": "2026-06-01 10:10:20",
+      "endpoint": "/admin/users/99",
+      "reason": "HTTP 200 + response 712 bytes — server returned private data for a different user's ID"
+    },
+    {
+      "vulnerability": "CORS",
+      "attacker_ip": "203.0.113.99",
+      "timestamp": "2026-06-01 11:10:00",
+      "endpoint": "/api/user",
+      "reason": "HTTP 200 + response 890 bytes — API returned data with ACAO header reflecting attacker origin, data leakage confirmed"
+    },
+    {
+      "vulnerability": "IDOR",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:05:00",
+      "endpoint": "/item?id=1+AND+SLEEP(5)--",
+      "reason": "HTTP 200 + response 312 bytes — server returned private data for a different user's ID"
+    },
+    {
+      "vulnerability": "SQL Injection",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:05:00",
+      "endpoint": "/item?id=1+AND+SLEEP(5)--",
+      "reason": "HTTP 200 + response 312 bytes — server likely returned database records or exposed SQL error details"
+    },
+    {
+      "vulnerability": "Blind SQL Injection",
+      "attacker_ip": "45.33.32.156",
+      "timestamp": "2026-06-01 12:05:00",
+      "endpoint": "/item?id=1+AND+SLEEP(5)--",
+      "reason": "Time-based payload + HTTP 200 — server executed SLEEP/WAITFOR, confirming injection is running inside the database"
+    },
+    {
+      "vulnerability": "SSRF",
+      "attacker_ip": "172.20.0.5",
+      "timestamp": "2026-06-01 12:10:00",
+      "endpoint": "/fetch?url=http://169.254.169.254/latest/meta-data/",
+      "reason": "HTTP 200 + 512 bytes — server fetched internal/cloud resource  on behalf of attacker"
+    },
+    {
+      "vulnerability": "SSRF",
+      "attacker_ip": "88.80.186.25",
+      "timestamp": "2026-06-01 12:15:00",
+      "endpoint": "/api/xml",
+      "reason": "HTTP 200 + 445 bytes — server fetched internal/cloud resource  on behalf of attacker"
+    },
+    {
+      "vulnerability": "XXE",
+      "attacker_ip": "88.80.186.25",
+      "timestamp": "2026-06-01 12:15:00",
+      "endpoint": "/api/xml",
+      "reason": "HTTP 200 + 445 bytes — XML parser processed external entity and likely returned file contents or internal data"
+    }
+  ],
+  "attackers_summary": [
+    {
+      "ip": "45.33.32.156",
+      "attack_count": 6,
+      "vulnerabilities": [
+        "IDOR",
+        "SQL Injection",
+        "Blind SQL Injection"
+      ],
+      "first_seen": "01/Jun/2026:12:01:00",
+      "last_seen": "01/Jun/2026:12:05:30",
+      "endpoints_targeted": [
+        "/api?id=1;DROP+TABLE+users--",
+        "/item?id=1+AND+SLEEP(5)--",
+        "/item?id=1+AND+1=2--"
+      ]
+    },
+    {
+      "ip": "10.0.0.55",
+      "attack_count": 5,
+      "vulnerabilities": [
+        "IDOR"
+      ],
+      "first_seen": "01/Jun/2026:10:10:00",
+      "last_seen": "01/Jun/2026:10:11:30",
+      "endpoints_targeted": [
+        "/user/9999",
+        "/user/1337",
+        "/admin/users/99",
+        "/admin/users/100",
+        "/invoice/5001"
+      ]
+    },
+    {
+      "ip": "88.80.186.25",
+      "attack_count": 4,
+      "vulnerabilities": [
+        "XXE",
+        "SSRF"
+      ],
+      "first_seen": "01/Jun/2026:12:15:00",
+      "last_seen": "01/Jun/2026:12:15:30",
+      "endpoints_targeted": [
+        "/api/xml",
+        "/xml"
+      ]
+    },
+    {
+      "ip": "172.16.0.88",
+      "attack_count": 3,
+      "vulnerabilities": [
+        "DOM XSS",
+        "XSS"
+      ],
+      "first_seen": "01/Jun/2026:10:00:00",
+      "last_seen": "01/Jun/2026:10:05:00",
+      "endpoints_targeted": [
+        "/page",
+        "/notfound#<script>alert(document.cookie)</script>"
+      ]
+    },
+    {
+      "ip": "203.0.113.99",
+      "attack_count": 3,
+      "vulnerabilities": [
+        "CSRF",
+        "CORS"
+      ],
+      "first_seen": "01/Jun/2026:11:10:00",
+      "last_seen": "01/Jun/2026:11:10:30",
+      "endpoints_targeted": [
+        "/api/ping",
+        "/api/user"
+      ]
+    },
+    {
+      "ip": "91.200.12.5",
+      "attack_count": 2,
+      "vulnerabilities": [
+        "CSRF"
+      ],
+      "first_seen": "01/Jun/2026:11:00:00",
+      "last_seen": "01/Jun/2026:11:00:30",
+      "endpoints_targeted": [
+        "/payment",
+        "/transfer"
+      ]
+    },
+    {
+      "ip": "172.20.0.5",
+      "attack_count": 2,
+      "vulnerabilities": [
+        "SSRF"
+      ],
+      "first_seen": "01/Jun/2026:12:10:00",
+      "last_seen": "01/Jun/2026:12:10:30",
+      "endpoints_targeted": [
+        "/proxy?src=file:///etc/passwd",
+        "/fetch?url=http://169.254.169.254/latest/meta-data/"
+      ]
+    },
+    {
+      "ip": "203.0.113.42",
+      "attack_count": 1,
+      "vulnerabilities": [
+        "XSS"
+      ],
+      "first_seen": "01/Jun/2026:09:30:12",
+      "last_seen": "01/Jun/2026:09:30:12",
+      "endpoints_targeted": [
+        "/search?q=%3Cscript%3Ealert(%27XSS%27)%3C/script%3E"
+      ]
+    },
+    {
+      "ip": "198.51.100.7",
+      "attack_count": 1,
+      "vulnerabilities": [
+        "XSS"
+      ],
+      "first_seen": "01/Jun/2026:09:45:00",
+      "last_seen": "01/Jun/2026:09:45:00",
+      "endpoints_targeted": [
+        "/search?q=<script>alert(1)</script>"
+      ]
+    }
+  ]
+}
